@@ -13,8 +13,9 @@ app.get("/", (req, res) => {
     //   console.log({ req, res });
     res.send("I am Learning Node with TS");
 });
-app.get("/todos/:title", (req, res) => {
-    console.log(req.query);
+app.get("/todos/:title/:body", (req, res) => {
+    console.log("From Query : ", req.query);
+    console.log("From Params :", req.params);
     const data = fs_1.default.readFileSync(filePath, { encoding: "utf-8" });
     console.log(data);
     res.json(data);
