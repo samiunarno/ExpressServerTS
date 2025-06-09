@@ -9,7 +9,8 @@ const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const todosRouter = express_1.default.Router();
-todosRouter.get("/todos", (req, res) => {
+app.use("/todos", todosRouter);
+todosRouter.get("/all-todos", (req, res) => {
     // console.log("From Query : ", req.query);
     // console.log("From Params :", req.params);
     const data = fs_1.default.readFileSync(filePath, { encoding: "utf-8" });
