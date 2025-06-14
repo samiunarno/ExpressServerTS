@@ -1,24 +1,43 @@
 import express, { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
+import { client } from "../config/mongodb";
+import { Collection } from "mongodb";
 
 const filePath = path.join(__dirname, "../../db/todo.json");
 
 export const todosRouter = express.Router();
 
-todosRouter.get("/", (req: Request, res: Response) => {
-  const data = fs.readFileSync(filePath, { encoding: "utf8" });
-  console.log("From Todo ROute");
-  res.json({
-    message: "From Route Arno",
-    data,
-  });
+todosRouter.get("/", async (req: Request, res: Response) => {
+  const db = await client.db("todosdb");
+  const col = await db.collection("todos");
+
+  const cursor = col.find({});
+  const todos = await cursor.toArray();
+
+  res.json(todos);
 });
 
-todosRouter.post("/create-todos", (req: Request, res: Response) => {
-  const newdata = req.body;
-  console.log(newdata);
-  res.send("Todo Created");
+todosRouter.post("/create-todos", async (req: Request, res: Response) => {
+  const { title, description, priority } = req.body;
+
+  const db = await client.db("todosdb");
+  const col = await db.collection("todos");
+  await col.insertOne({
+    title: title,
+    description: description,
+    priority: priority,
+    iscomplete: false,
+  });
+
+  const cursor = col.find({});
+  const todos = await cursor.toArray();
+  // const { title, body } = req.body;
+  // console.log(title, body);
+  res.json(todos);
+  // const newdata = req.body;
+  // console.log(newdata);
+  // res.send("Todo Created");
 });
 
 todosRouter.get("/todos/:title/:body ", (req: Request, res: Response) => {

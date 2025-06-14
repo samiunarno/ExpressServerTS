@@ -13,11 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
+const mongodb_1 = require("./config/mongodb");
 let server;
 const port = 5000;
 const newServer = () => __awaiter(void 0, void 0, void 0, function* () {
-    server = app_1.default.listen(port, () => {
+    yield mongodb_1.client.connect();
+    console.log("Successfully Connected To MongoDB");
+    server = app_1.default.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(`Server is Running On ${port}`);
-    });
+    }));
 });
 newServer();
