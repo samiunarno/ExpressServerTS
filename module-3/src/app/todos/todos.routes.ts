@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 import { client } from "../config/mongodb";
-import { Collection } from "mongodb";
+import { Collection, ObjectId } from "mongodb";
 
 const filePath = path.join(__dirname, "../../db/todo.json");
 
@@ -38,6 +38,15 @@ todosRouter.post("/create-todos", async (req: Request, res: Response) => {
   // const newdata = req.body;
   // console.log(newdata);
   // res.send("Todo Created");
+});
+
+todosRouter.get("/:id", async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const db = await client.db("todosdb");
+  const col = await db.collection("todos");
+
+  const todo = await col.findOne({ _id: new ObjectId(id) });
+  res.json(todo);
 });
 
 todosRouter.get("/todos/:title/:body ", (req: Request, res: Response) => {
